@@ -1,0 +1,186 @@
+---
+title: "Sarah Jones Resume"
+author: Nick Strayer
+date: "`r Sys.Date()`"
+output:
+  pagedown::html_resume:
+    css: ['css/styles.css', 'resume']
+    # set it to true for a self-contained HTML page but it'll take longer to render
+    self_contained: true
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  results='asis', 
+  echo = FALSE
+)
+
+library(glue)
+library(tidyverse)
+
+# Set this to true to have links turned into footnotes at the end of the document
+PDF_EXPORT <- FALSE
+
+# Holds all the links that were inserted for placement at the end
+links <- c()
+
+source('parsing_functions.R')
+
+# Load csv with position info
+position_data <- read_csv('positions.csv')
+```
+
+
+```{r}
+# When in export mode the little dots are unaligned, so fix that. 
+if(PDF_EXPORT){
+  cat("
+  <style>
+  :root{
+    --decorator-outer-offset-left: -6.5px;
+  }
+  </style>")
+}
+```
+
+
+Aside
+================================================================================
+
+
+![logo](beta_dist.png){width=100%}
+
+```{r}
+# When in export mode the little dots are unaligned, so fix that. 
+if(PDF_EXPORT){
+  cat("View this CV online with links at _nickstrayer.me/cv_")
+} else {
+  cat("[<i class='fas fa-download'></i> Download a PDF of this CV](https://github.com/nstrayer/cv/raw/master/strayer_cv.pdf)")
+}
+```
+
+Contact {#contact}
+--------------------------------------------------------------------------------
+
+
+- <i class="fa fa-envelope"></i> mrs_sarah_jones@proton.me
+- <i class="fa fa-github"></i> sjone128/sjone128.github.io
+- <i class="fa fa-link"></i> [linkedIn](https://www.linkedin.com/in/mrssjones/)
+- <i class="fa fa-phone"></i> (714) 880-2259
+
+
+
+Language Skills {#skills}
+--------------------------------------------------------------------------------
+
+```{r}
+skills <- tribble(
+  ~skill,               ~level,
+  "R",                  3,
+  "SQL",                3,
+  "Tableau",            3,
+  "Excel",              5,
+  "Salesforce",         4,
+  "Looker",             3,
+  
+)
+
+build_skill_bars(skills)
+```
+
+
+
+
+
+Disclaimer {#disclaimer}
+--------------------------------------------------------------------------------
+
+Made with the R package [**pagedown**](https://github.com/rstudio/pagedown). 
+
+The source code is available at [github.com/nstrayer/cv](https://github.com/nstrayer/cv).
+
+Last updated on `r Sys.Date()`.
+
+
+
+
+Main
+================================================================================
+
+Sarah Jones {#title}
+--------------------------------------------------------------------------------
+
+
+```{r}
+intro_text <- "I am a Data Analyst specializing in R statistical analysis and Tableau visualizations. Experience in data validation audit, market segmentation, and survey creation and analysis. I have worked on a voluntary passion projects, and incorporated data analytics into professional positions.
+
+Currently looking for a remote position."
+
+cat(sanitize_links(intro_text))
+```
+
+
+
+Education {data-icon=graduation-cap data-concise=true}
+--------------------------------------------------------------------------------
+
+```{r}
+print_section(position_data, 'education')
+```
+
+
+
+Research Experience {data-icon=laptop}
+--------------------------------------------------------------------------------
+
+```{r}
+print_section(position_data, 'internship_positions')
+```
+
+
+
+Passion Projects {data-icon=suitcase}
+--------------------------------------------------------------------------------
+
+::: aside
+I am a naturally curious, holistic thinker.  
+:::
+
+```{r}
+print_section(position_data, 'data_project')
+```
+
+<br>
+<br>
+<br>
+
+Professional Experience {data-icon=chalkboard-teacher}
+--------------------------------------------------------------------------------
+
+::: aside
+I believe quantitative and qualitative data are valuable tools to develop effective outcomes and actionable insights. 
+:::
+
+```{r}
+print_section(position_data, 'professional_position')
+```
+
+```{r}
+if(PDF_EXPORT){
+  cat("
+  
+Links {data-icon=link}
+--------------------------------------------------------------------------------
+
+<br>
+
+
+")
+  
+  walk2(links, 1:length(links), function(link, index){
+    print(glue('{index}. {link}'))
+  })
+}
+```
+
+
